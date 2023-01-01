@@ -24,7 +24,6 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 _titleWidget(),
                 _loginButton(),
-
               ],
             ),
           ),
@@ -40,14 +39,32 @@ class _LoginPageState extends State<LoginPage> {
           color: Colors.black, fontSize: 25, fontWeight: FontWeight.w600),
     );
   }
-  Widget _loginButton()
+  Widget _loginForm()
   {
-    return MaterialButton(onPressed: (){},
-    minWidth : _deviceWidth! * 0.7,
-    height: _deviceHeight! * 0.06,
+    return Container(
+      height: _deviceHeight!*0.2,
+      child: Form(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [],
+        ),
+      ),
+    );
+  }
+
+  Widget _loginButton() {
+    return MaterialButton(
+      onPressed: () {},
+      minWidth: _deviceWidth! * 0.7,
+      height: _deviceHeight! * 0.06,
       color: Colors.red,
-      child: const Text("Login",
-      style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.w600),),
+      child: const Text(
+        "Login",
+        style: TextStyle(
+            color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600),
+      ),
     );
   }
 }
