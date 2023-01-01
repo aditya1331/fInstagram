@@ -1,3 +1,5 @@
+import 'package:finstagram/Pages/Login_page.dart';
+import 'package:finstagram/Pages/register_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,12 +13,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'FInstagram',
       theme: ThemeData(
 
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
-      home: Scaffold(),
+      initialRoute: 'login',
+      routes: {
+        'register':(context) => RegisterPage(),
+        'login': (context) => LoginPage(),
+      },
     );
   }
 }
