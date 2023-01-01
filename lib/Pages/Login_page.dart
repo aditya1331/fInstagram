@@ -7,7 +7,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   double? _deviceHeight, _deviceWidth;
-
+  GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     _deviceWidth = MediaQuery.of(context).size.width;
@@ -44,16 +44,23 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       height: _deviceHeight!*0.2,
       child: Form(
+        key: _loginFormKey, //It allows to control form and holds the data required
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [],
+          children: [
+
+          ],
         ),
       ),
     );
   }
+  Widget _emailTextField(){
+    return TextFormField(
 
+    );
+  }
   Widget _loginButton() {
     return MaterialButton(
       onPressed: () {},
