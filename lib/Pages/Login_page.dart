@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
                 _titleWidget(),
                 _loginForm(),
                 _loginButton(),
+                _registerPageLink(),
               ],
             ),
           ),
@@ -108,10 +109,20 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget _registerPageLink() {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, 'register'),
+      child: const Text(
+        "Don't have an account?",
+        style: TextStyle(
+            color: Colors.blue, fontSize: 15, fontWeight: FontWeight.w400),
+      ),
+    );
+  }
+
   void _loginUser() {
     //This allows to call up validate function that is defined in email and password fields
     //The loginkey is linked to form and the form consists of children which are email and password
-
 
     if (_loginFormKey.currentState!.validate()) {
       _loginFormKey.currentState!.save();
