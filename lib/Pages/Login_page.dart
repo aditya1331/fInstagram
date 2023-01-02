@@ -72,11 +72,9 @@ class _LoginPageState extends State<LoginPage> {
       },
       validator: (_value) {
         bool _results = _value!.contains(RegExp(
-            r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-        );
-        _results ? null:"Please enter a valid email";
+            r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"));
+        return _results ? null : "Please enter a valid email";
       }, //validates the input
-
     );
   }
 
@@ -89,16 +87,16 @@ class _LoginPageState extends State<LoginPage> {
           _password = _value;
         });
       },
-      validator: (_value) =>
-        _value!.length> 6 ? null:"Please enter a password greater than charcters",
-       //validates the input
-
+      validator: (_value) => _value!.length > 6
+          ? null
+          : "Please enter a password greater than charcters",
+      //validates the input
     );
   }
 
   Widget _loginButton() {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: _loginUser,
       minWidth: _deviceWidth! * 0.7,
       height: _deviceHeight! * 0.06,
       color: Colors.red,
@@ -108,5 +106,15 @@ class _LoginPageState extends State<LoginPage> {
             color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600),
       ),
     );
+  }
+
+  void _loginUser() {
+    //This allows to call up validate function that is defined in email and password fields
+    //The loginkey is linked to form and the form consists of children which are email and password
+
+
+    if (_loginFormKey.currentState!.validate()) {
+      _loginFormKey.currentState!.save();
+    }
   }
 }
