@@ -49,7 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
       minWidth: _deviceWidth! * 0.5,
       height: _deviceHeight! * 0.05,
       color: Colors.red,
-      child: Text(
+      child: const Text(
         "Register",
         style: TextStyle(
           color: Colors.white,
