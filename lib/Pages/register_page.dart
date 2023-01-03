@@ -7,6 +7,8 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   double? _deviceWidth, _deviceHeight;
+  final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
+  String? _name, _email, _password;
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +23,10 @@ class _RegisterPageState extends State<RegisterPage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [_titleWidget(),
+              children: [
+                _titleWidget(),
+                _registrationForm(),
                 _registerButton(),
-
-
               ],
             ),
           ),
@@ -57,6 +59,68 @@ class _RegisterPageState extends State<RegisterPage> {
           fontWeight: FontWeight.w400,
         ),
       ),
+    );
+  }
+
+  Widget _registrationForm() {
+    return Container(
+      height: _deviceHeight! * 0.3,
+      child: Form(
+        key: _registerFormKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _nameTextField(),
+            _emailTextField(),
+            _passwordTextField(),
+
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _nameTextField() {
+    return TextFormField(
+      decoration: const InputDecoration(hintText: "Name..."),
+      validator: (_value) => _value!.length > 0 ? null : "Please enter a name",
+      onSaved: (_value) {
+        setState(() {
+          _name = _value;
+        });
+      },
+    );
+  }
+  Widget _emailTextField() {
+    return TextFormField(
+      decoration: const InputDecoration(hintText: "Email..."),
+      onSaved: (_value) {
+        setState(() {
+          _email = _value;
+        });
+      },
+      validator: (_value) {
+        bool _results = _value!.contains(RegExp(
+            r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"));
+        return _results ? null : "Please enter a valid email";
+      }, //validates the input
+    );
+  }
+  Widget _passwordTextField() {
+    return TextFormField(
+      obscureText: true,
+      decoration: const InputDecoration(hintText: "Password..."),
+      onSaved: (_value) {
+        setState(() {
+          _password = _value;
+        });
+      },
+      validator: (_value) => _value!.length > 6
+          ? null
+          : "Please enter a password greater than charcters",
+      //validates the input
     );
   }
 }
