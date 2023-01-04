@@ -58,7 +58,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _registerButton() {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: () {
+        if(_registerFormKey.currentState!.validate() && _image!=null)
+          {
+            _registerFormKey.currentState!.save();
+            print("Validated");
+          }
+      },
       minWidth: _deviceWidth! * 0.5,
       height: _deviceHeight! * 0.05,
       color: Colors.red,
@@ -94,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _profileImage() {
     var _imageProvider = _image != null ? FileImage(_image!) : NetworkImage(
-        "https://i.pravatar.cc/150?img=5")
+        "https://i.pravatar.cc/150?img=5");
     return GestureDetector(
       onTap: () {
         FilePicker.platform
