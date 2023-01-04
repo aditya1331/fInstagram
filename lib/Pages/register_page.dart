@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -9,11 +12,18 @@ class _RegisterPageState extends State<RegisterPage> {
   double? _deviceWidth, _deviceHeight;
   final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
   String? _name, _email, _password;
+  File? _image; //This file module is from dart.io not dart.html
 
   @override
   Widget build(BuildContext context) {
-    _deviceWidth = MediaQuery.of(context).size.width;
-    _deviceHeight = MediaQuery.of(context).size.height;
+    _deviceWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    _deviceHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -25,6 +35,7 @@ class _RegisterPageState extends State<RegisterPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _titleWidget(),
+                _profileImage(),
                 _registrationForm(),
                 _registerButton(),
               ],
@@ -75,9 +86,36 @@ class _RegisterPageState extends State<RegisterPage> {
             _nameTextField(),
             _emailTextField(),
             _passwordTextField(),
-
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _profileImage() {
+    var _imageProvider = _image != null ? FileImage(_image!) : NetworkImage(
+        "https://i.pravatar.cc/150?img=5")
+    return GestureDetector(
+      onTap: () {
+        FilePicker.platform
+            .pickFiles(
+            type: FileType
+                .image) //then function indicates the function to executed after image is extracted
+            .then((_result) =>
+        {
+          setState(() {
+            _image = File(_result!.files.first.path!);
+          })
+        });
+      },
+      child: Container(
+        height: 0.15 * _deviceHeight!,
+        width: _deviceWidth! * 0.15,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              fit :BoxFit.cover,
+              image: _imageProvider as ImageProvider,
+            )),
       ),
     );
   }
@@ -93,6 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
       },
     );
   }
+
   Widget _emailTextField() {
     return TextFormField(
       decoration: const InputDecoration(hintText: "Email..."),
@@ -108,6 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
       }, //validates the input
     );
   }
+
   Widget _passwordTextField() {
     return TextFormField(
       obscureText: true,
@@ -117,7 +157,8 @@ class _RegisterPageState extends State<RegisterPage> {
           _password = _value;
         });
       },
-      validator: (_value) => _value!.length > 6
+      validator: (_value) =>
+      _value!.length > 6
           ? null
           : "Please enter a password greater than charcters",
       //validates the input
