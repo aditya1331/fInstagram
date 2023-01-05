@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../services/firebase_service.dart';
+import 'package:get_it/get_it.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -9,6 +11,13 @@ class _LoginPageState extends State<LoginPage> {
   double? _deviceHeight, _deviceWidth;
   String? _email, _password;
   GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
+  FirebaseService? _firebaseService;
+
+  @override
+  void initState() {
+    super.initState();
+    _firebaseService = GetIt.instance.get<FirebaseService>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,12 +129,17 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _loginUser() {
+  void _loginUser() async {
     //This allows to call up validate function that is defined in email and password fields
     //The loginkey is linked to form and the form consists of children which are email and password
 
     if (_loginFormKey.currentState!.validate()) {
       _loginFormKey.currentState!.save();
+      bool _result = await _firebaseService!
+          .loginUser(email: _email!, password: _password!);
+      if (_result) {
+        Navigator.popAndPushNamed(context, 'home');
+      }
     }
   }
 }
