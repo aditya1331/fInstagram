@@ -1,6 +1,7 @@
 import 'dart:io';
-
+import 'package:get_it/get_it.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:finstagram/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -11,19 +12,20 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   double? _deviceWidth, _deviceHeight;
   final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
+  FirebaseService? _firebaseService;
   String? _name, _email, _password;
   File? _image; //This file module is from dart.io not dart.html
 
   @override
+  void initState() {
+    super.initState();
+    _firebaseService = GetIt.instance.get<FirebaseService>();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    _deviceWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    _deviceHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
+    _deviceWidth = MediaQuery.of(context).size.width;
+    _deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -56,14 +58,18 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _registerButton() {
+  Widget _registerButton()  {
     return MaterialButton(
-      onPressed: () {
-        if(_registerFormKey.currentState!.validate() && _image!=null)
-          {
-            _registerFormKey.currentState!.save();
-            print("Validated");
-          }
+      onPressed: () async {
+        if (_registerFormKey.currentState!.validate() && _image != null) {
+          _registerFormKey.currentState!.save();
+          bool _results =  await _firebaseService!.registerUser(
+              name: _name!,
+              email: _email!,
+              password: _password!,
+              image: _image!);
+          if (_results) Navigator.pop(context);
+        }
       },
       minWidth: _deviceWidth! * 0.5,
       height: _deviceHeight! * 0.05,
@@ -99,29 +105,29 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Widget _profileImage() {
-    var _imageProvider = _image != null ? FileImage(_image!) : NetworkImage(
-        "https://i.pravatar.cc/150?img=5");
+    var _imageProvider = _image != null
+        ? FileImage(_image!)
+        : NetworkImage("https://i.pravatar.cc/150?img=5");
     return GestureDetector(
       onTap: () {
         FilePicker.platform
             .pickFiles(
-            type: FileType
-                .image) //then function indicates the function to executed after image is extracted
-            .then((_result) =>
-        {
-          setState(() {
-            _image = File(_result!.files.first.path!);
-          })
-        });
+                type: FileType
+                    .image) //then function indicates the function to executed after image is extracted
+            .then((_result) => {
+                  setState(() {
+                    _image = File(_result!.files.first.path!);
+                  })
+                });
       },
       child: Container(
         height: 0.15 * _deviceHeight!,
         width: _deviceWidth! * 0.15,
         decoration: BoxDecoration(
             image: DecorationImage(
-              fit :BoxFit.cover,
-              image: _imageProvider as ImageProvider,
-            )),
+          fit: BoxFit.cover,
+          image: _imageProvider as ImageProvider,
+        )),
       ),
     );
   }
@@ -163,8 +169,7 @@ class _RegisterPageState extends State<RegisterPage> {
           _password = _value;
         });
       },
-      validator: (_value) =>
-      _value!.length > 6
+      validator: (_value) => _value!.length > 6
           ? null
           : "Please enter a password greater than charcters",
       //validates the input
