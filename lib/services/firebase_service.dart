@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path/path.dart' as pa;
 
 final String user_collection = "users";
+final String post_collection = "posts";
 
 class FirebaseService {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -54,18 +55,42 @@ class FirebaseService {
       String _userId = _userCredential.user!.uid;
       String _fileName = Timestamp.now().millisecondsSinceEpoch.toString() +
           pa.extension(image.path).toString();
-      UploadTask _task = _storage.ref('images/$_userId/$_fileName').putFile(image);
+      UploadTask _task =
+          _storage.ref('images/$_userId/$_fileName').putFile(image);
       return _task.then((_snapshot) async {
-        String downloadURL = await  _snapshot.ref.getDownloadURL();
+        String downloadURL = await _snapshot.ref.getDownloadURL();
         await _db.collection(user_collection).doc(_userId).set({
-          "name":name,
-          "email":email,
+          "name": name,
+          "email": email,
           "image": downloadURL,
-
         });
         return true;
-      })    ;
+      });
     } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> postImage(File _image) async {
+    try{
+      String _userID = _auth.currentUser!.uid;
+      String _fileName = Timestamp.now().millisecondsSinceEpoch.toString() +
+          pa.extension(_image.path).toString();
+      UploadTask _task =
+      _storage.ref('images/$_userID/$_fileName').putFile(_image);
+      return await _task.then((_snapshot) async{
+        String _downloadURL = await _snapshot.ref.getDownloadURL().toString();
+        await _db.collection(post_collection).add({
+          "userId":_userID,
+          "timestamp" : Timestamp.now(),
+          "image":_downloadURL
+        });
+        return true;
+      });
+    }
+    catch(e)
+    {
       print(e);
       return false;
     }
