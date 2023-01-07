@@ -102,4 +102,15 @@ class FirebaseService {
         .orderBy('timestamp', descending: true)
         .snapshots();
   }
+
+  Stream<QuerySnapshot> getPostForUser() {
+    String _userID = _auth.currentUser!.uid;
+    return _db
+        .collection(post_collection)
+        .where('userId', isEqualTo: _userID)
+        .snapshots();
+  }
+  Future<void> logout() async {
+await _auth.signOut();
+  }
 }

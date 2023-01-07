@@ -42,13 +42,16 @@ class _HomePageState extends State<HomePage> {
             onTap: _postImage,
             child: const Icon(Icons.add_a_photo),
           ),
-          Padding(
-              padding: const EdgeInsets.only(
+          const Padding(
+              padding: EdgeInsets.only(
             left: 8.0,
             right: 8.0,
           )),
           GestureDetector(
-            onTap: () {},
+            onTap: ()async {
+              await _firebaseService!.logout();
+              Navigator.popAndPushNamed(context, 'login');
+            },
             child: const Icon(Icons.logout),
           )
         ],
