@@ -51,9 +51,11 @@ class _feedPageState extends State<feedPage> {
               itemBuilder: (BuildContext context, int index) {
                 Map _post = _posts[index];
                 return Container(
+                  margin:  EdgeInsets.symmetric(vertical: _deviceHeight!*0.01,horizontal: _deviceWidth!*0.05),
                   height: _deviceHeight! * 0.3,
                   decoration: BoxDecoration(
                       image: DecorationImage(
+                        fit: BoxFit.cover,
                         image: NetworkImage(
                             _post["image"]),
                       )),
