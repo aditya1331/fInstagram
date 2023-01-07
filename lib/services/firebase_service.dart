@@ -73,26 +73,33 @@ class FirebaseService {
   }
 
   Future<bool> postImage(File _image) async {
-    try{
+    try {
       String _userID = _auth.currentUser!.uid;
       String _fileName = Timestamp.now().millisecondsSinceEpoch.toString() +
           pa.extension(_image.path).toString();
       UploadTask _task =
-      _storage.ref('images/$_userID/$_fileName').putFile(_image);
-      return await _task.then((_snapshot) async{
-        String _downloadURL = await _snapshot.ref.getDownloadURL().toString();
+          _storage.ref('images/$_userID/$_fileName').putFile(_image);
+      return await _task.then((_snapshot) async {
+        String _downloadURL = await _snapshot.ref.getDownloadURL();
         await _db.collection(post_collection).add({
-          "userId":_userID,
-          "timestamp" : Timestamp.now(),
-          "image":_downloadURL
+          "userId": _userID,
+          "timestamp": Timestamp.now(),
+          "image": _downloadURL
         });
         return true;
       });
-    }
-    catch(e)
-    {
+    } catch (e) {
       print(e);
       return false;
     }
+  }
+
+  Stream<QuerySnapshot> getLatestPosts() {
+    //Snapshots return stream which represent a collection of fututre files
+    // and this snapshots return the stream eveytime it encounters a change
+    return _db
+        .collection(post_collection)
+        .orderBy('timestamp', descending: true)
+        .snapshots();
   }
 }
